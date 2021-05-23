@@ -19,6 +19,11 @@
     "autoload": {
         "psr-4": { "PHPWarrior\\": "src/PHPWarrior/" }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "scripts": {
       "i18n-extract": "xgettext.pl -D src/ -D templates/ -D towers/ -o i18n/default.pot"
     },
