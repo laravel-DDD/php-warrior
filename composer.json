@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-      "php": ">=5.4.0",
+      "php": "8.*",
       "ulrichsg/getopt-php": "2.3",
       "gettext/gettext": "3.4.*"
     },
