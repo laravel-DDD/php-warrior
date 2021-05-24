@@ -85,7 +85,7 @@ class Position
      * @param $forward
      * @param int $right
      */
-    public function move($forward, $right = 0)
+    public function move($forward, int $right = 0)
     {
         list($this->x, $this->y) = $this->translate_offset($forward, $right);
     }
@@ -99,9 +99,10 @@ class Position
      * @param  $space
      * @return mixed
      */
-    public function distance_of($space)
+    public function distance_of($space): mixed
     {
         list ($x, $y) = $space->location();
+
         return abs($this->x - $x) + abs($this->y - $y);
     }
 
@@ -114,7 +115,7 @@ class Position
      * @param  $space
      * @return mixed
      */
-    public function relative_direction_of($space)
+    public function relative_direction_of($space): mixed
     {
         return $this->relative_direction($this->direction_of($space));
     }
@@ -123,7 +124,7 @@ class Position
      * @param  $space
      * @return string
      */
-    public function direction_of($space)
+    public function direction_of($space): string
     {
         list ($space_x, $space_y) = $space->location();
         if (abs($this->x - $space_x) > abs($this->y - $space_y)) {
@@ -158,6 +159,14 @@ class Position
     public function translate_offset($forward, $right)
     {
         $direction = Position::normalize_direction($this->direction());
+
+        return match ($direction)  {
+            'north' => [$this->x + (int) $right, $this->y - (int) $forward];
+            'east'  => [$this->x + (int) $forward, $this->y + (int) $right];
+            'south' => [$this->x - (int) $right, $this->y + (int) $forward];
+            'west'  => [$this->x - (int) $forward, $this->y - (int) $right];
+        }
+
         switch ($direction) {
             case 'north':
                 return [$this->x + (int)$right, $this->y - (int)$forward];

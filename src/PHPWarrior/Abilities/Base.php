@@ -12,9 +12,17 @@ class Base
         $this->unit = $unit;
     }
 
-    public function offset($direction, $forward = 1, $right = 0)
+    public function offset($direction, $forward = 1, $right = 0): array
     {
         $direction = \PHPWarrior\Position::normalize_direction($direction);
+
+        return match ($direction) {
+            'forward'  => [$forward,  -$right];
+            'backward' => [-$forward, $right];
+            'right'    => [$right, $forward];
+            'left'     => [-$right, -$forward];
+        }
+
         switch ($direction) {
             case 'forward':
                 return [$forward, -$right];
