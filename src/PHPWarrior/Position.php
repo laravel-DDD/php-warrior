@@ -11,8 +11,8 @@ class Position
 {
 
     public $floor;
-    public static $DIRECTIONS = ['north', 'east', 'south', 'west'];
-    public static $RELATIVE_DIRECTIONS = ['forward', 'right', 'backward', 'left'];
+    public static array $directions = ['north', 'east', 'south', 'west'];
+    public static array $relativeDirections = ['forward', 'right', 'backward', 'left'];
 
     /**
      * Position constructor.
@@ -27,7 +27,7 @@ class Position
         $this->floor = $floor;
         $this->x = $x;
         $this->y = $y;
-        $direction = Position::normalize_direction($direction);
+        $direction = Position::normalizeDirection($direction);
         $this->direction_index = array_search(
             is_null($direction) ? 'north' : $direction,
             self::$DIRECTIONS
@@ -89,7 +89,7 @@ class Position
      */
     public function move($forward, int $right = 0): void
     {
-        list($this->x, $this->y) = $this->translate_offset($forward, $right);
+        list($this->x, $this->y) = $this->translateOffset($forward, $right);
     }
 
     public function distanceFromStairs(): mixed
@@ -155,7 +155,7 @@ class Position
         return self::$relativeDirections[$offset];
     }
 
-    public function translate_offset($forward, $right): array
+    public function translateOffset($forward, $right): array
     {
         $direction = Position::normalizeDirection($this->direction());
 
@@ -175,6 +175,12 @@ class Position
         return str_replace(':', '', $direction);
     }
 
+
+    /**
+     * The stub of all possible directions in the game for unit or the player.
+     *
+     * @return void
+     */
     public function directionStub(): void
     {
         __('north');
