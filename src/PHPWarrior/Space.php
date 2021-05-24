@@ -2,7 +2,6 @@
 
 namespace PHPWarrior;
 
-
 /**
  * Class Space
  *
@@ -12,7 +11,7 @@ class Space
 {
     /**
      * Space constructor.
-     * 
+     *
      * @param $floor
      * @param int $x
      * @param int $y
@@ -24,67 +23,49 @@ class Space
         $this->y = $y;
     }
 
-    public function is_wall()
+    public function isWall()
     {
-        return $this->floor->is_out_of_bounds($this->x, $this->y);
+        return $this->floor->isOutOfBounds($this->x, $this->y);
     }
 
-    public function is_warrior()
+    public function isWarrior()
     {
         return is_a($this->unit(), 'PHPWarrior\Units\Warrior');
     }
 
-    public function is_golem()
+    public function isGolem()
     {
         return is_a($this->unit(), 'PHPWarrior\Units\Golem');
     }
 
-    public function is_player()
+    public function isPlayer()
     {
-        return ($this->is_warrior() || $this->is_golem());
+        return ($this->isWarrior() || $this->isGolem());
     }
 
-    public function is_enemy()
+    public function isEnemy()
     {
-        return (
-            $this->unit() &&
-            !$this->is_player() &&
-            !$this->is_captive()
-        );
+        return ($this->unit() && ! $this->isPlayer() && ! $this->is_captive());
     }
 
-    public function is_captive()
+    public function isCaptive()
     {
-        return (
-            $this->unit() &&
-            $this->unit()->is_bound()
-        );
+        return ($this->unit() && $this->unit()->isBound());
     }
 
-    public function is_empty()
+    public function isEmpty()
     {
-        return (
-            is_null($this->unit()) &&
-            !$this->is_wall()
-        );
+        return (is_null($this->unit()) && ! $this->isWall());
     }
 
-    public function is_stairs()
+    public function isStairs()
     {
-        return (
-            $this->floor->stairs_location == $this->location()
-        );
+        return ($this->floor->stairsLocation == $this->location());
     }
 
-    public function is_ticking()
+    public function isTicking()
     {
-        return (
-            $this->unit() &&
-            array_search(
-                'explode',
-                array_keys($this->unit()->abilities())
-            ) !== false
-        );
+        return ($this->unit() && array_search('explode', array_keys($this->unit()->abilities())) !== false);
     }
 
     public function unit()
@@ -92,30 +73,34 @@ class Space
         return $this->floor->get($this->x, $this->y);
     }
 
-    public function location()
+    public function location(): array
     {
         return [$this->x, $this->y];
     }
 
-    public function character()
+    public function character(): string
     {
         if ($this->unit()) {
             return $this->unit()->character();
-        } elseif ($this->is_stairs()) {
-            return '>';
-        } else {
-            return ' ';
         }
+
+        if ($this->isStairs()) {
+            return '>';
+        }
+
+        return ' ';
     }
 
-    public function __ToString()
+    public function __ToString(): string
     {
         if ($this->unit()) {
-            return (string)$this->unit();
-        } elseif ($this->is_wall()) {
-            return __('wall');
-        } else {
-            return __('nothing');
+            return (string) $this->unit();
         }
+
+        if ($this->is_wall()) {
+            return __('wall');
+        }
+
+        return __('nothing');
     }
 }

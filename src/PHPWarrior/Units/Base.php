@@ -4,7 +4,7 @@ namespace PHPWarrior\Units;
 
 /**
  * Class Base
- * 
+ *
  * @package PHPWarrior\Units
  */
 class Base
@@ -19,17 +19,15 @@ class Base
      *
      * @return int, Attack power
      */
-    public function attack_power()
+    public function attackPower(): int
     {
         return 0;
     }
 
     /**
      * Maximum health.
-     *
-     * @return int
      */
-    public function max_health()
+    public function maxHealth(): int
     {
         return 0;
     }
@@ -39,20 +37,20 @@ class Base
      *
      * @param $points
      */
-    public function earn_points($points)
+    public function earnPoints($points)
     {
+        //
     }
 
     /**
      * Health.
-     *
-     * @return int
      */
-    public function health()
+    public function health(): int
     {
         if (!isset($this->health)) {
-            $this->health = $this->max_health();
+            $this->health = $this->maxHealth();
         }
+
         return $this->health;
     }
 
@@ -61,11 +59,12 @@ class Base
      *
      * @param $amount
      */
-    public function take_damage($amount)
+    public function takeDamage($amount)
     {
-        if ($this->is_bound()) {
+        if ($this->isBound()) {
             $this->unbind();
         }
+
         if ($this->health()) {
             $this->health -= $amount;
             $this->say(sprintf(
@@ -82,20 +81,16 @@ class Base
 
     /**
      * Is unit alive?
-     *
-     * @return bool
      */
-    public function is_alive()
+    public function isAlive(): bool
     {
         return !is_null($this->position);
     }
 
     /**
      * is_bound?
-     *
-     * @return mixed
      */
-    public function is_bound()
+    public function isBound(): mixed
     {
         return $this->bound;
     }
@@ -112,7 +107,7 @@ class Base
     /**
      * bind.
      */
-    public function bind()
+    public function bind(): void
     {
         $this->bound = true;
     }
@@ -122,28 +117,25 @@ class Base
      *
      * @param $msg
      */
-    public function say($msg)
+    public function say($msg): void
     {
-        \PHPWarrior\UI::puts_with_delay("{$this->name()} {$msg}");
+        \PHPWarrior\UI::putsWithDelay("{$this->name()} {$msg}");
     }
 
     /**
      * name.
-     *
-     * @return mixed
      */
-    public function name()
+    public function name(): mixed
     {
-        $slice_name = explode('\\', get_class($this));
-        return array_pop($slice_name);
+        $sliceName = explode('\\', get_class($this));
+
+        return array_pop($sliceName);
     }
 
     /**
      * __ToString function.
-     *
-     * @return mixed
      */
-    public function __ToString()
+    public function __ToString(): mixed
     {
         return __($this->name());
     }
@@ -154,26 +146,27 @@ class Base
      * @param $new_abbilities
      * @return $this
      */
-    public function add_abilities($new_abbilities)
+    public function addAbilities($newAbbilities): self
     {
-        foreach ($new_abbilities as $abbility_str) {
+        foreach ($newAbbilities as $abbilityStr) {
             $camel = '';
-            $abbility_str = str_replace(':', '', $abbility_str);
-            foreach (explode('_', $abbility_str) as $str) {
+            $abbilityStr = str_replace(':', '', $abbilityStr);
+
+            foreach (explode('_', $abbilityStr) as $str) {
                 $camel .= ucfirst($str);
             }
-            $class_name = 'PHPWarrior\Abilities\\' . $camel;
-            $this->abilities[$abbility_str] = new $class_name($this);
+
+            $className = 'PHPWarrior\Abilities\\' . $camel;
+            $this->abilities[$abbilityStr] = new $className($this);
         }
+
         return $this;
     }
 
     /**
      * Next turn.
-     *
-     * @return \PHPWarrior\Turn
      */
-    public function next_turn()
+    public function nextTurn(): \PHPWarrior\Turn
     {
         return new \PHPWarrior\Turn($this->abilities());
     }
@@ -181,23 +174,25 @@ class Base
     /**
      * Prepare for your turn.
      */
-    public function prepare_turn()
+    public function prepareTurn()
     {
-        $this->current_turn = $this->next_turn();
-        return $this->play_turn($this->current_turn);
+        $this->currentTurn = $this->nextTurn();
+
+        return $this->playTurn($this->currentTurn);
     }
 
     /**
      * Perform your turn.
      */
-    public function perform_turn()
+    public function performTurn(): void
     {
         if ($this->position) {
             foreach ($this->abilities as $ability) {
-                $ability->pass_turn();
+                $ability->passTurn();
             }
-            if ($this->current_turn->action && !$this->is_bound()) {
-                list ($name, $args) = $this->current_turn->action;
+
+            if ($this->currentTurn->action && ! $this->isBound()) {
+                list ($name, $args) = $this->currentTurn->action;
                 call_user_func_array([$this->abilities[$name], 'perform'], $args);
                 //$this->abilities[$name]->perform($args);
             }
@@ -209,27 +204,24 @@ class Base
      *
      * @param $turn
      */
-    public function play_turn($turn)
+    public function playTurn($turn)
     {
         # to be overriden by subclass
     }
 
     /**
-     * Abilities.
-     *
-     * @return array
+     * Method for getting the array ofabilities that are binded to the unit.
+     * In the level that the user is currently playing.
      */
-    public function abilities()
+    public function abilities(): array
     {
         return $this->abilities;
     }
 
     /**
      * The character.
-     *
-     * @return string
      */
-    public function character()
+    public function character(): string
     {
         return '?';
     }

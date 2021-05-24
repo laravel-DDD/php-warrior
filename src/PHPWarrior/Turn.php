@@ -4,7 +4,7 @@ namespace PHPWarrior;
 
 /**
  * Class Turn
- * 
+ *
  * @package PHPWarrior
  */
 class Turn
@@ -16,7 +16,7 @@ class Turn
 
     /**
      * Turn constructor.
-     * 
+     *
      * @param $abilities
      */
     public function __construct($abilities)
@@ -32,11 +32,11 @@ class Turn
      */
     public function __call($name, $arguments)
     {
-        if ($this->action && !$this->abilities[$name]->is_sense) {
+        if ($this->action && ! $this->abilities[$name]->isSense) {
             throw new \Exception(__("Only one action can be performed per turn."));
         }
 
-        if (!$this->abilities[$name]->is_sense) {
+        if (!$this->abilities[$name]->isSense) {
             return $this->action = [$name, $arguments];
         } else {
             return call_user_func_array(

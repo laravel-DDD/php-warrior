@@ -39,27 +39,29 @@ class Position
      * @param  int $y
      * @return bool
      */
-    public function is_at($x, $y)
+    public function isAt($x, $y): bool
     {
         return ($this->x == $x && $this->y == $y);
     }
 
     public function direction()
     {
-        return self::$DIRECTIONS[$this->direction_index];
+        return self::$directions[$this->directionIndex];
     }
 
     /**
      * @param $amount
      */
-    public function rotate($amount)
+    public function rotate($amount): void
     {
-        $this->direction_index += $amount;
-        while ($this->direction_index > 3) {
-            $this->direction_index -= 4;
+        $this->directionIndex += $amount;
+        
+        while ($this->directionIndex > 3) {
+            $this->directionIndex -= 4;
         }
-        while ($this->direction_index < 0) {
-            $this->direction_index += 4;
+
+        while ($this->directionIndex < 0) {
+            $this->directionIndex += 4;
         }
     }
 
@@ -68,15 +70,15 @@ class Position
      * @param  int $right
      * @return mixed
      */
-    public function relative_space($forward, $right = 0)
+    public function relative_space($forward, int $right = 0): mixed
     {
         return call_user_func_array(
             [$this->floor, 'space'],
-            $this->translate_offset($forward, $right)
+            $this->translateOffset($forward, $right)
         );
     }
 
-    public function space()
+    public function space(): mixed
     {
         return $this->floor->space($this->x, $this->y);
     }
@@ -85,114 +87,95 @@ class Position
      * @param $forward
      * @param int $right
      */
-    public function move($forward, int $right = 0)
+    public function move($forward, int $right = 0): void
     {
         list($this->x, $this->y) = $this->translate_offset($forward, $right);
     }
 
-    public function distance_from_stairs()
+    public function distanceFromStairs(): mixed
     {
-        return $this->distance_of($this->floor->stairs_space());
+        return $this->distanceOf($this->floor->stairsSpace());
     }
 
     /**
      * @param  $space
      * @return mixed
      */
-    public function distance_of($space): mixed
+    public function distanceOf($space): mixed
     {
         list ($x, $y) = $space->location();
-
         return abs($this->x - $x) + abs($this->y - $y);
     }
 
-    public function relative_direction_of_stairs()
+    public function relativeDirectionOfStairs(): mixed
     {
-        return $this->relative_direction_of($this->floor->stairs_space());
+        return $this->relativeDirectionOf($this->floor->stairsSpace());
     }
 
     /**
      * @param  $space
      * @return mixed
      */
-    public function relative_direction_of($space): mixed
+    public function relativeDirectionOf($space): mixed
     {
-        return $this->relative_direction($this->direction_of($space));
+        return $this->relativeDirection($this->directionOf($space));
     }
 
     /**
      * @param  $space
      * @return string
      */
-    public function direction_of($space): string
+    public function directionOf($space): string
     {
-        list ($space_x, $space_y) = $space->location();
-        if (abs($this->x - $space_x) > abs($this->y - $space_y)) {
-            return $space_x > $this->x ? 'east' : 'west';
-        } else {
-            return $space_y > $this->y ? 'south' : 'north';
+        list ($spaceX, $spaceY) = $space->location();
+        if (abs($this->x - $spaceX) > abs($this->y - $spaceY)) {
+            return $spaceX > $this->x ? 'east' : 'west';
         }
+
+        return $spaceY > $this->y ? 'south' : 'north';
     }
 
     /**
      * @param  $direction
      * @return mixed
      */
-    public function relative_direction($direction)
+    public function relative_direction($direction): mixed
     {
-        $direction = self::normalize_direction($direction);
-        $offset = array_search($direction, self::$DIRECTIONS) - $this->direction_index;
+        $direction = self::normalizeDirection($direction);
+        $offset = array_search($direction, self::$directions) - $this->directionIndex;
+        
         while ($offset > 3) {
             $offset -= 4;
         }
+        
         while ($offset < 0) {
             $offset += 4;
         }
-        return self::$RELATIVE_DIRECTIONS[$offset];
+
+        return self::$relativeDirections[$offset];
     }
 
-    /**
-     * @param  $forward
-     * @param  $right
-     * @return array
-     */
-    public function translate_offset($forward, $right)
+    public function translate_offset($forward, $right): array
     {
-        $direction = Position::normalize_direction($this->direction());
+        $direction = Position::normalizeDirection($this->direction());
 
-        return match ($direction)  {
+        return match ($direction) {
             'north' => [$this->x + (int) $right, $this->y - (int) $forward];
             'east'  => [$this->x + (int) $forward, $this->y + (int) $right];
             'south' => [$this->x - (int) $right, $this->y + (int) $forward];
             'west'  => [$this->x - (int) $forward, $this->y - (int) $right];
         }
-
-        switch ($direction) {
-            case 'north':
-                return [$this->x + (int)$right, $this->y - (int)$forward];
-                break;
-            case 'east':
-                return [$this->x + (int)$forward, $this->y + (int)$right];
-                break;
-            case 'south':
-                return [$this->x - (int)$right, $this->y + (int)$forward];
-                break;
-            case 'west':
-                return [$this->x - (int)$forward, $this->y - (int)$right];
-                break;
-        }
     }
 
     /**
-     * @param  $direction
-     * @return mixed
+     * Method for normalizing the directionof the position troughout the game.
      */
-    public static function normalize_direction($direction)
+    public static function normalizeDirection($direction): mixed
     {
         return str_replace(':', '', $direction);
     }
 
-    public function direction_stub()
+    public function directionStub(): void
     {
         __('north');
         __('east');

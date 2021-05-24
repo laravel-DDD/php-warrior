@@ -22,21 +22,6 @@ class Base
             'right'    => [$right, $forward];
             'left'     => [-$right, -$forward];
         }
-
-        switch ($direction) {
-            case 'forward':
-                return [$forward, -$right];
-                break;
-            case 'backward':
-                return [-$forward, $right];
-                break;
-            case 'right':
-                return [$right, $forward];
-                break;
-            case 'left':
-                return [-$right, -$forward];
-                break;
-        }
     }
 
     public function space($direction, $forward = 1, $right = 0)

@@ -2,10 +2,9 @@
 
 namespace PHPWarrior;
 
-
 /**
  * Class Tower
- * 
+ *
  * @package PHPWarrior
  */
 class Tower
@@ -14,7 +13,7 @@ class Tower
 
     /**
      * Tower constructor.
-     * 
+     *
      * @param $path
      */
     public function __construct($path)

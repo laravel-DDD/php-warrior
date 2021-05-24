@@ -2,18 +2,18 @@
 
 namespace PHPWarrior;
 
-use \Ulrichsg\Getopt\Getopt;
-use \Ulrichsg\Getopt\Option;
-use \Gettext\Translator;
+use Ulrichsg\Getopt\Getopt;
+use Ulrichsg\Getopt\Option;
+use Gettext\Translator;
+use Gettext\Translations;
 
 /**
  * Class Runner
- * 
+ *
  * @package PHPWarrior
  */
 class Runner
 {
-
     /**
      * Runner constructor.
      *
@@ -37,15 +37,15 @@ class Runner
         Config::$in_stream = $this->stdin;
         Config::$out_stream = $this->stdout;
         Config::$delay = 0.6;
-        $this->parse_options();
-        $this->load_translation();
+        $this->parseOptions();
+        $this->loadTranslation();
         $this->game->start();
     }
 
     /**
      * Parse the options.
      */
-    public function parse_options()
+    public function parseOptions()
     {
         $getopt = new Getopt([
             ['d', 'directory', Getopt::REQUIRED_ARGUMENT, 'Run under given directory'],
@@ -55,25 +55,31 @@ class Runner
             ['L', 'locale', Getopt::REQUIRED_ARGUMENT, 'Specify locale like en_US'],
             ['h', 'help', Getopt::NO_ARGUMENT, 'Show this message'],
         ]);
+
         try {
             $getopt->parse();
         } catch (\Exception $e) {
             echo $e->getMessage() . "\n";
             exit;
         }
+
         if ($getopt->getOption('h')) {
             echo $getopt->getHelpText();
             exit;
         }
+
         if ($getopt->getOption('d')) {
-            Config::$path_prefix = $getopt->getOption('d');
+            Config::$pathPrefix = $getopt->getOption('d');
         }
+
         if ($getopt->getOption('l')) {
-            Config::$practice_level = $getopt->getOption('l');
+            Config::$practiceLevel = $getopt->getOption('l');
         }
+
         if ($getopt->getOption('s')) {
-            Config::$skip_input = true;
+            Config::$skipInput = true;
         }
+
         if (!is_null($getopt->getOption('t'))) {
             Config::$delay = $getopt->getOption('t');
         }
@@ -87,13 +93,13 @@ class Runner
     /**
      * Load the i12n translation file.
      */
-    public function load_translation()
+    public function loadTranslation(): void
     {
-        $translator = new \Gettext\Translator();
-        $i18n_path = realpath(__DIR__ . '/../../i18n/' . Config::$locale . '.po');
+        $translator = new Translator();
+        $i18nPath = realpath(__DIR__ . '/../../i18n/' . Config::$locale . '.po');
 
-        if (file_exists($i18n_path)) {
-            $translations = \Gettext\Translations::fromPoFile($i18n_path);
+        if (file_exists($i18nPath)) {
+            $translations = Translations::fromPoFile($i18nPath);
             $translator->loadTranslations($translations);
         }
 

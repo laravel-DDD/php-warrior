@@ -12,14 +12,16 @@ class Look extends Base
         return __("Returns an array of up to three Spaces in the given direction (forward by public functionault).");
     }
 
-    public function perform($direction = 'forward')
+    public function perform(string$direction = 'forward'): mixed      
     {
         $direction = \PHPWarrior\Position::normalize_direction($direction);
         $this->verify_direction($direction);
         $map = [];
+
         foreach (range(1, 3) as $amount) {
             $map[] = $this->space($direction, $amount);
         }
+
         return $map;
     }
 }

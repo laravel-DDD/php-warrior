@@ -4,7 +4,7 @@ namespace PHPWarrior\Units;
 
 /**
  * Class Warrior
- * 
+ *
  * @package PHPWarrior\Units
  */
 class Warrior extends Base
@@ -18,7 +18,7 @@ class Warrior extends Base
     public function __construct()
     {
         $this->score = 0;
-        $this->golem_abilities = [];
+        $this->golemAbilities = [];
     }
 
     /**
@@ -26,9 +26,9 @@ class Warrior extends Base
      *
      * @param $turn
      */
-    public function play_turn($turn)
+    public function playTurn($turn)
     {
-        $this->player()->play_turn($turn);
+        $this->player()->playTurn($turn);
     }
 
     /**
@@ -49,7 +49,7 @@ class Warrior extends Base
      *
      * @param $points
      */
-    public function earn_points($points)
+    public function earnPoints($points)
     {
         $this->score += $points;
         $this->say(sprintf(
@@ -58,37 +58,31 @@ class Warrior extends Base
         ));
     }
 
-    public function attack_power()
+    public function attackPower(): int
     {
         return 5;
     }
 
     /**
      * Set the shooting power.
-     *
-     * @return int
      */
-    public function shoot_power()
+    public function shootPower(): int
     {
         return 3;
     }
 
     /**
      * Set the maximum health.
-     *
-     * @return int
      */
-    public function max_health()
+    public function maxHealth(): int
     {
         return 20;
     }
 
     /**
      * Return the character name.
-     *
-     * @return mixed
      */
-    public function name()
+    public function name(): mixed
     {
         if ($this->name && !empty($this->name)) {
             return $this->name;
@@ -99,10 +93,8 @@ class Warrior extends Base
 
     /**
      * Character.
-     *
-     * @return string
      */
-    public function character()
+    public function character(): string
     {
         return '@';
     }
@@ -110,11 +102,12 @@ class Warrior extends Base
     /**
      * Perform the warrior his turn.
      */
-    public function perform_turn()
+    public function performTurn()
     {
-        if (is_null($this->current_turn->action)) {
+        if (is_null($this->currentTurn->action)) {
             $this->say(__("does nothing"));
         }
-        return parent::perform_turn();
+
+        return parent::performTurn();
     }
 }

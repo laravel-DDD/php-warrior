@@ -1,10 +1,10 @@
-<?php
+<?php 
 
 namespace PHPWarrior\Abilities;
 
 /**
  * Class Attack
- * 
+ *
  * @package PHPWarrior\Abilities
  */
 class Attack extends Base

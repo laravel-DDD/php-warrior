@@ -18,5 +18,7 @@ if (file_exists($a = realpath(__DIR__.'/../../../autoload.php'))) {
     require_once realpath(__DIR__.'/../vendor/autoload.php');
 }
 
+(new \NunoMaduro\Collision\Provider)->register();
+
 $runner = new \PHPWarrior\Runner($argv, STDIN, STDOUT);
 $runner->run();
