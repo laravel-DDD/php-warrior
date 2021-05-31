@@ -160,13 +160,6 @@ class Position
     {
         $direction = Position::normalize_direction($this->direction());
 
-        return match ($direction)  {
-            'north' => [$this->x + (int) $right, $this->y - (int) $forward];
-            'east'  => [$this->x + (int) $forward, $this->y + (int) $right];
-            'south' => [$this->x - (int) $right, $this->y + (int) $forward];
-            'west'  => [$this->x - (int) $forward, $this->y - (int) $right];
-        }
-
         switch ($direction) {
             case 'north':
                 return [$this->x + (int)$right, $this->y - (int)$forward];
