@@ -2,18 +2,16 @@
 
 namespace PHPWarrior;
 
-use \Ulrichsg\Getopt\Getopt;
-use \Ulrichsg\Getopt\Option;
-use \Gettext\Translator;
+use Ulrichsg\Getopt\Getopt;
+use Gettext\Translator;
 
 /**
  * Class Runner
- * 
+ *
  * @package PHPWarrior
  */
 class Runner
 {
-
     /**
      * Runner constructor.
      *
@@ -45,7 +43,7 @@ class Runner
     /**
      * Parse the options.
      */
-    public function parse_options()
+    public function parseOptions()
     {
         $getopt = new Getopt([
             ['d', 'directory', Getopt::REQUIRED_ARGUMENT, 'Run under given directory'],
@@ -87,7 +85,7 @@ class Runner
     /**
      * Load the i12n translation file.
      */
-    public function load_translation()
+    public function loadTranslation()
     {
         $translator = new \Gettext\Translator();
         $i18n_path = realpath(__DIR__ . '/../../i18n/' . Config::$locale . '.po');

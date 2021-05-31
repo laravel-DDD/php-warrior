@@ -4,7 +4,7 @@ namespace PHPWarrior;
 
 /**
  * Class Level
- * 
+ *
  * @package PHPWarrior
  */
 class Level
@@ -17,14 +17,14 @@ class Level
     public $clue;
     public $warrior;
     public $floor;
-    public $time_bonus;
-    public $ace_score;
+    public $timeBonus;
+    public $aceScore;
 
     /**
      * @param  $percent
      * @return string
      */
-    public static function grade_letter($percent)
+    public static function gradeLetter($percent): string
     {
         if ($percent >= 1.0) {
             return 'S';
@@ -53,99 +53,92 @@ class Level
         $this->number = $number;
     }
 
-    public function player_path()
+    public function playerPath(): string
     {
-        return $this->profile->player_path();
+        return $this->profile->playerPath();
     }
 
-    public function load_path()
+    public function loadPath(): string
     {
-        return $this->profile->tower_path . '/level_' . sprintf("%03d", $this->number) . '.php';
+        return $this->profile->towerPath . '/level_' . sprintf("%03d", $this->number) . '.php';
     }
 
-    public function load_level()
+    public function loadLevel(): void
     {
-        $level_loader = new LevelLoader($this, $this->load_path());
+        $levelLoader = new LevelLoader($this, $this->loadPath());
     }
 
-    public function load_player()
+    public function loadPlayer(): void
     {
-        include_once $this->player_path() . '/player.php';
+        include_once $this->playerPath() . '/player.php';
     }
 
-    public function generate_player_files()
+    public function generatePlayerFiles(): mixed
     {
         $this->load_level();
-        $player_generator = new PlayerGenerator($this);
-        return $player_generator->generate();
+        $playerGenerator = new PlayerGenerator($this);
+
+        return $playerGenerator->generate();
     }
 
-    public function play($turns = 1000)
+    public function play(int $turns = 1000): void
     {
-        $this->load_level();
+        $this->loadLevel();
+
         foreach (range(0, $turns) as $n) {
-            if ($this->is_passed() || $this->is_failed()) {
+            if ($this->isPassed() || $this->isFailed()) {
                 return;
             }
+
             $num = $n + 1;
+
             UI::puts(sprintf(__("- turn %s -"), $num));
             UI::put($this->floor->character());
+
             foreach ($this->floor->units() as $unit) {
-                $unit->prepare_turn();
+                $unit->prepareTurn();
             }
+
             foreach ($this->floor->units() as $unit) {
-                $unit->perform_turn();
+                $unit->performTurn();
             }
-            if ($this->time_bonus > 0) {
-                $this->time_bonus -= 1;
+
+            if ($this->timeBonus > 0) {
+                --$this->timeBonus;
             }
         }
     }
 
-    public function tally_points()
+    public function tallyPoints(): void
     {
         $score = 0;
 
-        UI::puts(sprintf(
-            __("Level Score: %s"),
-            $this->warrior->score
-        ));
+        UI::puts(sprintf(__("Level Score: %s"), $this->warrior->score));
         $score += $this->warrior->score;
 
-        UI::puts(sprintf(
-            __("Time Bonus: %s"),
-            $this->time_bonus
-        ));
+        UI::puts(sprintf(__("Time Bonus: %s"), $this->time_bonus));
         $score += $this->time_bonus;
 
-        if (count($this->floor->other_units()) == 0) {
-            UI::puts(sprintf(
-                __("Clear Bonus: %s"),
-                $this->clear_bonus()
-            ));
-            $score += $this->clear_bonus();
+        if (count($this->floor->otherUnits()) == 0) {
+            UI::puts(sprintf(__("Clear Bonus: %s"), $this->clearBonus()));
+            $score += $this->clearBonus();
         }
 
-        if ($this->profile->is_epic()) {
-            if ($this->grade_for($score)) {
-                UI::puts(sprintf(
-                    __("Level Grade: %s"),
-                    $this->grade_for($score)
-                ));
+        if ($this->profile->isEpic()) {
+            if ($this->gradeFor($score)) {
+                UI::puts(sprintf(__("Level Grade: %s"), $this->gradeFor($score)));
             }
-            UI::puts(sprintf(
-                __("Total Score: %s"),
-                $this->score_calculation($this->profile->current_epic_score, $score)
-            ));
-            if ($this->ace_score) {
-                $this->profile->current_epic_grades[$this->number] = ($score / $this->ace_score);
+
+            UI::puts(sprintf(__("Total Score: %s"), $this->scoreCalculation($this->profile->currentEpicScore, $score)));
+
+            if ($this->aceScore) {
+                $this->profile->currentEpicGrades[$this->number] = ($score / $this->aceScore);
             }
-            $this->profile->current_epic_score += $score;
+
+            $this->profile->currentEpicScore += $score;
         } else {
-            UI::puts(sprintf(
-                __("Total Score: %s"),
-                $this->score_calculation($this->profile->score, $score)
-            ));
+            UI::puts(sprintf(__("Total Score: %s"), $this->score_calculation($this->profile->score, $score)));
+
             $this->profile->score += $score;
             $this->profile->abilities = array_keys($this->warrior->abilities);
         }
@@ -155,61 +148,59 @@ class Level
      * @param  $score
      * @return string
      */
-    public function grade_for($score)
+    public function gradeFor($score): string
     {
-        if ($this->ace_score) {
-            return self::grade_letter($score / $this->ace_score);
+        if ($this->aceScore) {
+            return self::gradeLetter($score / $this->aceScore);
         }
     }
 
-    public function clear_bonus()
+    public function clearBonus(): float
     {
-        return round(($this->warrior->score + $this->time_bonus) * 0.2);
+        return round(($this->warrior->score + $this->timeBonus) * 0.2);
     }
 
     /**
      * @param  $current_score
      * @param  $addition
      * @return string
+     *
      */
-    public function score_calculation($current_score, $addition)
+    public function scoreCalculation($currentScore, $addition): string
     {
-        if (empty($current_score)) {
+        if (empty($currentScore)) {
             return $addition;
-        } else {
-            $total = $current_score + $addition;
-            return "{$current_score} + {$addition} = {$total}";
         }
+
+        $total = $current_score + $addition;
+        return "{$current_score} + {$addition} = {$total}";
     }
 
-    public function is_passed()
+    public function isPassed(): bool
     {
-        return $this->floor->stairs_space()->is_warrior();
+        return $this->floor->stairsSpace()->isWarrior();
     }
 
-    public function is_failed()
+    public function isFailed(): bool
     {
-        return (array_search(
-                $this->warrior,
-                $this->floor->units()
-            ) === false);
+        return (! in_array($this->warrior, $this->floor->units(), true));
     }
 
-    public function is_exists()
+    public function isExists(): bool
     {
-        return file_exists($this->load_path());
+        return file_exists($this->loadPath());
     }
 
     /**
      * @param  $warrior
      * @return mixed
      */
-    public function setup_warrior($warrior)
+    public function setupWarrior($warrior): mixed
     {
         $this->warrior = $warrior;
-        $this->warrior->add_abilities($this->profile->abilities);
-        $this->warrior->name = $this->profile->warrior_name;
+        $this->warrior->addAbilities($this->profile->abilities);
+        $this->warrior->name = $this->profile->warriorName;
+
         return $warrior;
     }
-
 }

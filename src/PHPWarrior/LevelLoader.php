@@ -2,9 +2,12 @@
 
 namespace PHPWarrior;
 
+use PHPWarrior\Units\Base;
+use PHPWarrior\Units\Warrior;
+
 /**
  * Class LevelLoader
- * 
+ *
  * @package PHPWarrior
  */
 class LevelLoader
@@ -25,50 +28,40 @@ class LevelLoader
 
     /**
      * Description.
-     *
-     * @param $desc
      */
-    public function description($desc)
+    public function description($desc): void
     {
         $this->level->description = $desc;
     }
 
     /**
      * Tip.
-     *
-     * @param $tip
      */
-    public function tip($tip)
+    public function tip($tip): void
     {
         $this->level->tip = $tip;
     }
 
     /**
      * Clue.
-     *
-     * @param $clue
      */
-    public function clue($clue)
+    public function clue($clue): void
     {
         $this->level->clue = $clue;
     }
 
     /**
      * Time bonus.
-     *
-     * @param $bonus
      */
-    public function time_bonus($bonus)
+    public function timeBonus($bonus): void
     {
-        $this->level->time_bonus = $bonus;
+        $this->level->timeBonus = $bonus;
     }
 
     /**
      * Ace score.
-     *
-     * @param $score
      */
-    public function ace_score($score)
+    public function aceScore($score): void
     {
         $this->level->ace_score = $score;
     }
@@ -76,10 +69,8 @@ class LevelLoader
     /**
      * Size.
      *
-     * @param $width
-     * @param $height
      */
-    public function size($width, $height)
+    public function size($width, $height): void
     {
         $this->floor->width = $width;
         $this->floor->height = $height;
@@ -87,13 +78,10 @@ class LevelLoader
 
     /**
      * Stairs.
-     *
-     * @param $x
-     * @param $y
      */
-    public function stairs($x, $y)
+    public function stairs($x, $y): void
     {
-        $this->floor->place_stairs($x, $y);
+        $this->floor->placeStairs($x, $y);
     }
 
     /**
@@ -106,12 +94,13 @@ class LevelLoader
      *
      * @return mixed
      */
-    public function unit($unit, $x, $y, $facing = ':north')
+    public function unit($unit, $x, $y, string $facing = ':north'): mixed
     {
-        if (!is_a($unit, 'PHPWarrior\Units\Base')) {
-            $camel = $this->unit_to_constant($unit);
+        if (! $unit instanceof Base) {
+            $camel = $this->unitToConstant($unit);
             $unit = new $camel();
         }
+
         $this->floor->add($unit, $x, $y, $facing);
         //yield unit if block_given?
         return $unit;
@@ -128,19 +117,18 @@ class LevelLoader
      */
     public function warrior($x, $y, $facing)
     {
-        return $this->level->setup_warrior(
-            $this->unit(new Units\Warrior(), $x, $y, $facing)
+        return $this->level->setupWarrior(
+            $this->unit(new Warrior(), $x, $y, $facing)
         );
     }
 
     /**
      * Unit to constant
      *
-     * @param $name
-     *
+     * @param  mixed $name Yhe name of the unit in the level.
      * @return string
      */
-    public function unit_to_constant($name)
+    public function unitToConstant($name): string
     {
         $camel = '';
         $name = str_replace(':', '', $name);

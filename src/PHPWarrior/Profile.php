@@ -2,49 +2,26 @@
 
 namespace PHPWarrior;
 
-
 class Profile
 {
     public $score;
 
-    /**
-     * @var bool
-     */
-    public $epic = false;
+    public bool $epic = false;
 
-    public $epic_score;
-    public $current_epic_score;
-    public $average_grade;
+    public $epicScore;
+    public $currentEpicScore;
+    public $averageGrade;
 
-    /**
-     * @var array
-     */
-    public $current_epic_grades = [];
+    public array $currentEpicGrades = [];
+    public array $abilities = [];
+    public int|null $levelNumber = 0;
+    public int|null $lastLevelNumber;
+    public string $towerPath = '';
+    public string $warriorName;
+    public string $playerPath;
+    public string $tower;
 
-    /**
-     * @var array
-     */
-    public $abilities = [];
-
-    /**
-     * @var int
-     */
-    public $level_number = 0;
-
-    /**
-     * @var int
-     */
-    public $last_level_number;
-
-    /**
-     * @var string
-     */
-    public $tower_path = '';
-    public $warrior_name;
-    public $player_path;
-    public $tower;
-
-    public static function encode($obj)
+    public static function encode($obj): string
     {
         return serialize($obj);
     }
@@ -52,22 +29,23 @@ class Profile
     /**
      * Save
      */
-    public function save()
+    public function save(): void
     {
         // update_epic_score
         // @level_number = 0 if epic?
-        file_put_contents($this->player_path() . '/.pwprofile', self::encode($this));
+        file_put_contents($this->playerPath() . '/.pwprofile', self::encode($this));
     }
 
     /**
      * Decode a string.
-     *
-     * @param  $str
-     * @return mixed
      */
-    public static function decode($str)
+    public static function decode(string $str): mixed
     {
-        return unserialize($str);
+        // The build in php unserialize method options has the allowed_classes in the options.
+        // Because the php object obfuscation security bug in php itself. With the options.
+        // We prevent the security issue form happening.
+
+        return unserialize($str, ['allowed_classes' => true]);
     }
 
     /**
@@ -76,10 +54,9 @@ class Profile
      * @param  $path
      * @return mixed
      */
-    public static function load($path)
+    public static function load(string $path): mixed
     {
-        $profile = self::decode(file_get_contents($path));
-        return $profile;
+        return self::decode(file_get_contents($path));
     }
 
     /**
@@ -87,134 +64,122 @@ class Profile
      *
      * @return string
      */
-    public function player_path()
+    public function playerPath(): string
     {
-        if (!$this->player_path) {
-            $this->player_path = realpath(Config::$path_prefix) . '/phpwarrior/' . $this->directory_name();
+        if (!$this->playerPath) {
+            $this->playerPath = realpath(Config::$pathPrefix) . '/phpwarrior/' . $this->directory_name();
         }
-        return $this->player_path;
+
+        return $this->playerPath;
     }
 
     /**
      * The directory name
-     *
-     * @return mixed
      */
-    public function directory_name()
+    public function directoryName(): string
     {
-        return implode(
-            '-',
-            [strtolower($this->warrior_name), $this->tower()->name()]
-        );
+        return implode('-', [strtolower($this->warriorName), $this->tower()->name()]);
     }
 
     public function __ToString()
     {
         return implode('-', [
-            $this->warrior_name,
+            $this->warriorName,
             $this->tower->name(),
-            __("Level") . ' ' . $this->level_number,
+            __("Level") . ' ' . $this->levelNumber,
             __("score") . ' ' . $this->score
         ]);
     }
 
     /**
      * Epic score with grade.
-     *
-     * @return string
      */
-    public function epic_score_with_grade()
+    public function epicScoreWithGrade(): string
     {
-        if ($this->average_grade) {
-            $letter = Level::grade_letter($this->average_grade);
-            return "{$this->epic_score} ({$letter})";
-        } else {
-            return epic_score;
+        if ($this->averageGrade) {
+            $letter = Level::grade_letter($this->averageGrade);
+
+            return "{$this->epicScore} ({$letter})";
         }
+
+        return $this->epicScore;
     }
 
     /**
      * Tower.
-     *
-     * @return Tower
      */
-    public function tower()
+    public function tower(): Tower
     {
-        if (!$this->tower) {
-            $this->tower = new Tower($this->tower_path);
+        if (! $this->tower) {
+            $this->tower = new Tower($this->towerPath);
         }
         return $this->tower;
     }
 
     /**
      * The current level.
-     *
-     * @return Level
      */
-    public function current_level()
+    public function currentLevel(): Level
     {
-        return new Level($this, $this->level_number);
+        return new Level($this, $this->levelNumber);
     }
 
     /**
      * The next level.
-     *
-     * @return Level
      */
-    public function next_level()
+    public function nextLevel(): Level
     {
         return new Level($this, $this->level_number + 1);
     }
 
-    public function enable_epic_mode()
+    public function enableEpicMode(): void
     {
         $this->epic = true;
-        $this->epic_score = 0;
-        $this->current_epic_score = 0;
-        $this->last_level_number = $this->level_number;
+        $this->epicScore = 0;
+        $this->currentEpicScore = 0;
+        $this->lastLevelNumber = $this->levelNumber;
     }
 
-    public function enable_normal_mode()
+    public function enableNormalMode(): void
     {
         $this->epic = false;
-        $this->epic_score = 0;
-        $this->current_epic_score = 0;
-        $this->current_epic_grades = [];
-        $this->average_grade = null;
-        $this->level_number = $this->last_level_number;
-        $this->last_level_number = null;
+        $this->epicScore = 0;
+        $this->currentEpicScore = 0;
+        $this->currentEpicGrades = [];
+        $this->averageGrade = null;
+        $this->levelNumber = $this->lastLevelNumber;
+        $this->lastLevelNumber = null;
     }
 
-    public function is_epic()
+    public function isEpic(): bool
     {
         return $this->epic;
     }
 
-    public function is_level_after_epic()
+    public function isLevelAfterEpic(): bool
     {
-        if ($this->last_level_number) {
-            $level = new Level(
-                $this,
-                $this->last_level_number + 1
-            );
-            return $level->is_exists();
+        if ($this->lastLevelNumber) {
+            $level = new Level($this, $this->lastLevelNumber + 1);
+
+            return $level->isExists();
         }
+
         return false;
     }
 
-    public function update_epic_score()
+    public function updateEpicScore(): void
     {
-        if ($this->current_epic_score > $this->epic_score) {
-            $this->epic_score = $this->current_epic_score;
-            $this->average_grade = $this->calculate_average_grade();
+        if ($this->currentEpicScore > $this->epicScore) {
+            $this->epicScore = $this->currentEpicScore;
+            $this->averageGrade = $this->calculateAverageGrade();
         }
     }
 
-    public function calculate_average_grade()
+    public function calculateAverageGrade()
     {
-        if (count($this->current_epic_grades) > 0) {
-            $sum = array_sum($this->current_epic_grades);
-            return $sum / count($this->current_epic_grades);
+        if (count($this->currentEpicGrades) > 0) {
+            $sum = array_sum($this->currentEpicGrades);
+            return $sum / count($this->currentEpicGrades);
         }
     }
 }

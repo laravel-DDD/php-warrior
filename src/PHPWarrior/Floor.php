@@ -2,14 +2,15 @@
 
 namespace PHPWarrior;
 
+use PHPWarrior\Units\Warrior;
+
 /**
  * Class Floor
- * 
+ *
  * @package PHPWarrior
  */
 class Floor
 {
-
     public $width = 0;
     public $height = 0;
     public $units = [];
@@ -24,7 +25,7 @@ class Floor
      *
      * @param null $direction
      */
-    public function add($unit, $x, $y, $direction = null)
+    public function add($unit, $x, $y, $direction = null): void
     {
         $this->units[] = $unit;
         $unit->position = new Position($this, $x, $y, $direction);
@@ -36,49 +37,37 @@ class Floor
      * @param $x
      * @param $y
      */
-    public function place_stairs($x, $y)
+    public function placeStairs($x, $y): void
     {
         $this->stairs_location = [$x, $y];
     }
 
     /**
      * Stairs space.
-     *
-     * @return mixed
      */
-    public function stairs_space()
+    public function stairsSpace(): mixed
     {
-        return call_user_func_array(
-            [$this, 'space'],
-            $this->stairs_location
-        );
+        return call_user_func_array([$this, 'space'], $this->stairs_location);
     }
 
     /**
      * Units.
-     *
-     * @return array
      */
-    public function units()
+    public function units(): array
     {
         // todo? filter null
-        return array_filter(
-            $this->units,
-            function ($v) {
-                return !is_null($v->position);
-            }
-        );
+        return array_filter($this->units, static function ($v) {
+            return ! is_null($v->position);
+        });
     }
 
     /**
      * Other units.
-     *
-     * @return array
      */
-    public function other_units()
+    public function otherUnits(): array
     {
-        return array_filter($this->units, function ($v) {
-            is_a($v, 'PHPWarrior\Units\Warrior');
+        return array_filter($this->units, static function ($v): void {
+            $v instanceof Warrior;
         });
     }
 
@@ -90,10 +79,10 @@ class Floor
      *
      * @return mixed
      */
-    public function get($x, $y)
+    public function get($x, $y): mixed
     {
         foreach ($this->units as $v) {
-            if (!is_null($v->position) && $v->position->is_at($x, $y)) {
+            if (!is_null($v->position) && $v->position->isAt($x, $y)) {
                 return $v;
             }
         }
@@ -104,10 +93,8 @@ class Floor
      *
      * @param $x
      * @param $y
-     *
-     * @return Space
      */
-    public function space($x, $y)
+    public function space($x, $y): Space
     {
         return new Space($this, $x, $y);
     }
@@ -117,51 +104,44 @@ class Floor
      *
      * @param $x
      * @param $y
-     *
-     * @return bool
      */
-    public function is_out_of_bounds($x, $y)
+    public function isOutOfBounds($x, $y): bool
     {
-        return (
-            $x < 0 ||
-            $y < 0 ||
-            $x > ($this->width - 1) ||
-            $y > ($this->height - 1)
-        );
+        return ($x < 0 || $y < 0 || $x > ($this->width - 1) || $y > ($this->height - 1));
     }
 
     /**
-     * Charecter
-     *
-     * @return string
+     * Character
      */
-    public function character()
+    public function character(): string
     {
         $rows = [];
         $rows[] = ' ' . str_repeat('-', $this->width);
+
         for ($y = 0; $y < $this->height; $y++) {
             $row = '|';
+
             for ($x = 0; $x < $this->width; $x++) {
                 $row .= $this->space($x, $y)->character();
             }
             $row .= '|';
             $rows[] = $row;
         }
+
         $rows[] = ' ' . str_repeat('-', $this->width);
         return implode("\n", $rows) . "\n";
     }
 
     /**
      * Get the unique units.
-     *
-     * @return array
      */
-    public function unique_units()
+    public function uniqueUnits(): array
     {
-        $unique_units = [];
-        foreach ($this->units as $u) {
-            $unique_units[(string)$u] = $u;
+        $uniqueUnits = [];
+
+        foreach ($this->units as $unit) {
+            $uniqueUnits[(string)$unit] = $unit;
         }
-        return $unique_units;
+        return $uniqueUnits;
     }
 }

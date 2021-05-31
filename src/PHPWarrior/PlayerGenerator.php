@@ -1,16 +1,18 @@
 <?php
+
 namespace PHPWarrior;
+
+use RuntimeException;
 
 /**
  * Class PlayerGenerator
- * 
+ *
  * @package PHPWarrior
  */
 class PlayerGenerator
 {
-
     public $level;
-    public $previous_level;
+    public $previousLevel;
 
     /**
      * Class constrictor.
@@ -24,58 +26,52 @@ class PlayerGenerator
 
     /**
      * Previous level.
-     *
-     * @return Level
      */
-    public function previous_level()
+    public function previousLevel(): Level
     {
-        if (!$this->previous_level) {
-            $this->previous_level = new Level(
-                $this->level->profile,
-                $this->level->number - 1
-            );
+        if (!$this->previousLevel) {
+            $this->previousLevel = new Level($this->level->profile, $this->level->number - 1);
         }
-        return $this->previous_level;
+
+        return $this->previousLevel;
     }
 
     /**
      * Generate.
      */
-    public function generate()
+    public function generate(): void
     {
-        if ($this->level->number == 1) {
-            if (!file_exists($this->level->player_path())) {
-                mkdir($this->level->player_path(), 0777, true);
+        if ($this->level->number === 1) {
+            if (
+                ! file_exists($this->level->playerPath())
+                && ! mkdir($concurrentDirectory = $this->level->playerPath(), 0777, true)
+                && ! is_dir($concurrentDirectory)
+            ) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
-            copy($this->template_path() . '/player.php', $this->level->player_path() . '/player.php');
+
+            copy($this->templatePath() . '/player.php', $this->level->playerPath() . '/player.php');
         }
 
         file_put_contents(
-            $this->level->player_path() . '/README',
-            $this->read_template($this->template_path() . '/README.php')
+            $this->level->playerPath() . '/README',
+            $this->readTemplate($this->templatePath() . '/README.php')
         );
     }
 
     /**
      * Template path
-     *
-     * @return string
      */
-    public function template_path()
+    public function templatePath(): string
     {
-        return realpath(__DIR__ . '/../../templates');
+        return dirname(__DIR__, 2) . '/templates';
     }
 
-    /**
-     * @param  $path
-     * @return string
-     */
-    public function read_template($path)
+    public function readTemplate(string $path): string
     {
         ob_start();
         include($path);
-        $content = ob_get_contents();
-        ob_end_clean();
-        return $content;
+
+        return ob_get_clean();
     }
 }

@@ -4,47 +4,52 @@ namespace PHPWarrior;
 
 /**
  * Class UI
- * 
+ *
  * @package PHPWarrior
  */
 class UI
 {
     /**
-     * @param $msg
+     * @param  mixed $msg
+     * @return mixed
      */
-    public static function puts($msg)
+    public static function puts(mixed $msg): mixed
     {
-        if (Config::$out_stream) {
+        if (Config::$outStream) {
             fwrite(Config::$out_stream, $msg . PHP_EOL);
         }
     }
 
     /**
-     * @param $msg
+     * @param  $msg
+     * @return mixed
      */
-    public static function puts_with_delay($msg)
+    public static function putsWithDelay($msg): mixed
     {
         $result = self::puts($msg);
+
         if (!is_null(Config::$delay)) {
             usleep(Config::$delay * 1000000);
         }
+
         return $result;
     }
 
     /**
-     * @param $msg
+     * @param  mixed $msg
+     * @return mixed
      */
-    public static function put($msg)
+    public static function put(mixed $msg): mixed
     {
-        if (Config::$out_stream) {
-            fwrite(Config::$out_stream, $msg);
+        if (Config::$outStream) {
+            fwrite(Config::$outStream, $msg);
         }
     }
 
     public static function gets()
     {
-        if (Config::$in_stream) {
-            return trim(fgets(Config::$in_stream));
+        if (Config::$inStream) {
+            return trim(fgets(Config::$inStream));
         }
     }
 
@@ -64,11 +69,9 @@ class UI
      */
     public static function ask($msg)
     {
-        fwrite(Config::$out_stream, $msg . ' [yn] ');
-        if (trim(fgets(Config::$in_stream)) === 'y') {
-            return true;
-        }
-        return false;
+        fwrite(Config::$outStream, $msg . ' [yn] ');
+
+        return trim(fgets(Config::$inStream)) === 'y';
     }
 
     /**
@@ -83,18 +86,18 @@ class UI
         } else {
             foreach ($options as $i => $option) {
                 $num = $i + 1;
+
                 if (is_array($option)) {
                     self::puts("[{$num}] {$option[1]}");
                 } else {
                     self::puts("[{$num}] {$option}");
                 }
             }
-            $choice = self::request(sprintf(
-                __("Choose %s by typing the number: "),
-                $item
-            ));
+
+            $choice = self::request(sprintf(__("Choose %s by typing the number: "), $item));
             $response = $options[$choice - 1];
         }
+
         return $response;
     }
 }
