@@ -4,7 +4,7 @@ namespace PHPWarrior\Units;
 
 /**
  * Class Wizard
- * 
+ *
  * @package PHPWarrior\Units
  */
 class Wizard extends Base
@@ -14,18 +14,21 @@ class Wizard extends Base
      */
     public function __construct()
     {
-        $this->add_abilities(['shoot', 'look']);
+        $this->addAbilities(['shoot', 'look']);
     }
 
-    public function play_turn($turn)
+    public function playTurn($turn): void
     {
         $directions = ['forward', 'left', 'right'];
+
         foreach ($directions as $direction) {
             foreach ($turn->look($direction) as $space) {
                 if ($space->is_player()) {
                     $turn->shoot($direction);
                     return;
-                } elseif (!$space->is_empty()) {
+                }
+
+                if (! $space->is_empty()) {
                     break;
                 }
             }
@@ -34,30 +37,26 @@ class Wizard extends Base
 
     /**
      * Shooting power for the wizard.
-     *
-     * @return int
      */
-    public function shoot_power()
+    public function shootPower(): int
     {
         return 11;
     }
 
     /**
-     * Maximun health for the wizard.
+     * Maximum health for the wizard.
      *
      * @return int
      */
-    public function max_health()
+    public function maxHealth(): int
     {
         return 3;
     }
 
     /**
      * The character.
-     *
-     * @return string
      */
-    public function character()
+    public function character(): string
     {
         return "w";
     }

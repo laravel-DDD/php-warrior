@@ -3,14 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="ba336b15-90d5-403d-b066-94e2067b4eb9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Floor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Floor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Level.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Level.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/LevelLoader.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/LevelLoader.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/PlayerGenerator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/PlayerGenerator.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Profile.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Profile.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Runner.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Runner.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Turn.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Turn.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/UI.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/UI.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Units/Archer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Units/Archer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Units/Base.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Units/Base.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Units/Captive.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Units/Captive.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Units/Sludge.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Units/Sludge.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Units/ThickSludge.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Units/ThickSludge.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PHPWarrior/Units/Warrior.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/PHPWarrior/Units/Warrior.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

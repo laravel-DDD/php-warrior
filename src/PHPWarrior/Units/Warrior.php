@@ -2,13 +2,16 @@
 
 namespace PHPWarrior\Units;
 
+use Player;
+
 /**
  * Class Warrior
- * 
+ *
  * @package PHPWarrior\Units
  */
 class Warrior extends Base
 {
+    private $name;
 
     /**
      * Class constructor.
@@ -18,7 +21,7 @@ class Warrior extends Base
     public function __construct()
     {
         $this->score = 0;
-        $this->golem_abilities = [];
+        $this->golemAbilities = [];
     }
 
     /**
@@ -26,59 +29,49 @@ class Warrior extends Base
      *
      * @param $turn
      */
-    public function play_turn($turn)
+    public function playTurn($turn): void
     {
-        $this->player()->play_turn($turn);
+        $this->player()->playTurn($turn);
     }
 
     /**
      * Player.
-     *
-     * @return \Player
      */
-    public function player()
+    public function player(): mixed
     {
-        if (!isset($this->player)) {
-            $this->player = new \Player();
+        if (! isset($this->player)) {
+            $this->player = new Player();
         }
+
         return $this->player;
     }
 
     /**
      * Earn points.
-     *
-     * @param $points
      */
-    public function earn_points($points)
+    public function earnPoints($points): void
     {
         $this->score += $points;
-        $this->say(sprintf(
-            __("earns %s points"),
-            $points
-        ));
+        $this->say(sprintf(__("earns %s points"), $points));
     }
 
-    public function attack_power()
+    public function attackPower(): int
     {
         return 5;
     }
 
     /**
      * Set the shooting power.
-     *
-     * @return int
      */
-    public function shoot_power()
+    public function shootPower(): int
     {
         return 3;
     }
 
     /**
      * Set the maximum health.
-     *
-     * @return int
      */
-    public function max_health()
+    public function maxHealth(): int
     {
         return 20;
     }
@@ -88,21 +81,19 @@ class Warrior extends Base
      *
      * @return mixed
      */
-    public function name()
+    public function name(): mixed
     {
         if ($this->name && !empty($this->name)) {
             return $this->name;
-        } else {
-            return __('Warrior');
         }
+
+        return __('Warrior');
     }
 
     /**
      * Character.
-     *
-     * @return string
      */
-    public function character()
+    public function character(): string
     {
         return '@';
     }
@@ -110,11 +101,12 @@ class Warrior extends Base
     /**
      * Perform the warrior his turn.
      */
-    public function perform_turn()
+    public function performTurn(): mixed
     {
-        if (is_null($this->current_turn->action)) {
+        if (is_null($this->currentTurn->action)) {
             $this->say(__("does nothing"));
         }
-        return parent::perform_turn();
+
+        return parent::performTurn();
     }
 }

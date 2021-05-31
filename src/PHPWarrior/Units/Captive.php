@@ -2,10 +2,9 @@
 
 namespace PHPWarrior\Units;
 
-
 /**
  * Class Captive
- * 
+ *
  * @package PHPWarrior\Units
  */
 class Captive extends Base
@@ -23,17 +22,15 @@ class Captive extends Base
      *
      * @return int
      */
-    public function max_health()
+    public function maxHealth(): int
     {
         return 1;
     }
 
     /**
      * Character type.
-     *
-     * @return string
      */
-    public function character()
+    public function character(): string
     {
         return "C";
     }

@@ -2,10 +2,9 @@
 
 namespace PHPWarrior\Units;
 
-
 /**
  * Class Archer
- * 
+ *
  * @package PHPWarrior\Units
  */
 class Archer extends Base
@@ -15,7 +14,7 @@ class Archer extends Base
      */
     public function __construct()
     {
-        $this->add_abilities(['shoot', 'look']);
+        $this->addAbilities(['shoot', 'look']);
     }
 
     /**
@@ -23,15 +22,18 @@ class Archer extends Base
      *
      * @param $turn
      */
-    public function play_turn($turn)
+    public function playTurn($turn): void
     {
         $directions = ['forward', 'left', 'right'];
+
         foreach ($directions as $direction) {
             foreach ($turn->look($direction) as $space) {
                 if ($space->is_player()) {
                     $turn->shoot($direction);
                     return;
-                } elseif (!$space->is_empty()) {
+                }
+
+                if (!$space->is_empty()) {
                     break;
                 }
             }
@@ -40,30 +42,24 @@ class Archer extends Base
 
     /**
      * Shooting power for the ranger.
-     *
-     * @return int
      */
-    public function shoot_power()
+    public function shootPower(): int
     {
         return 3;
     }
 
     /**
-     * Maximun health
-     *
-     * @return int
+     * Maximum health
      */
-    public function max_health()
+    public function maxHealth(): int
     {
         return 7;
     }
 
     /**
      * Type of character.
-     *
-     * @return string
      */
-    public function character()
+    public function character(): string
     {
         return "a";
     }
