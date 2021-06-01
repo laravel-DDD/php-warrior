@@ -4,15 +4,14 @@ namespace PHPWarrior\Abilities;
 
 class Health extends Base
 {
+    public bool $isSense = true;
 
-    public $is_sense = true;
-
-    public function description()
+    public function description(): string
     {
         return __('Returns an integer representing your health.');
     }
 
-    public function perform()
+    public function perform(): mixed
     {
         return $this->unit->health();
     }

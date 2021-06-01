@@ -2,9 +2,11 @@
 
 namespace PHPWarrior\Abilities;
 
+use PHPWarrior\Position;
+
 /**
  * Class Attack
- * 
+ *
  * @package PHPWarrior\Abilities
  */
 class Attack extends Base
@@ -14,7 +16,7 @@ class Attack extends Base
      *
      * @return mixed
      */
-    public function description()
+    public function description(): string
     {
         return __('Attacks a unit in given direction (forward by default).');
     }
@@ -24,28 +26,24 @@ class Attack extends Base
      *
      * @throws \Exception
      */
-    public function perform($direction = 'forward')
+    public function perform(string $direction = 'forward'): void
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
-        $this->verify_direction($direction);
+        $direction = Position::normalizeDirection($direction);
+        $this->verifyDirection($direction);
         $receiver = $this->unit($direction);
+
         if ($receiver) {
-            $this->unit->say(sprintf(
-                __('attacks %1$s and hits %2$s'),
-                __($direction),
-                $receiver
-            ));
+            $this->unit->say(sprintf(__('attacks %1$s and hits %2$s'), __($direction), $receiver));
+
             if ($direction === 'backward') {
                 $power = ceil($this->unit->attack_power() / 2.0);
             } else {
                 $power = $this->unit->attack_power();
             }
+
             $this->damage($receiver, $power);
         } else {
-            $this->unit->say(sprintf(
-                __("attacks %s and hits nothing"),
-                __($direction)
-            ));
+            $this->unit->say(sprintf(__("attacks %s and hits nothing"), __($direction)));
         }
     }
 }

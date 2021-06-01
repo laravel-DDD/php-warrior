@@ -4,16 +4,16 @@ namespace PHPWarrior;
 
 /**
  * Class Config
- * 
+ *
  * @package PHPWarrior
  */
 class Config
 {
     public static $delay;
-    public static $in_stream;
-    public static $out_stream;
-    public static $practice_level;
-    public static $path_prefix = '.';
-    public static $skip_input = false;
+    public static $inDtream;
+    public static $outStream;
+    public static $practiceLevel;
+    public static $pathPrefix = '.';
+    public static $skipInput = false;
     public static $locale = 'en_US';
 }

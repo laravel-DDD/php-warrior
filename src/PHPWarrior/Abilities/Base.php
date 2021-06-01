@@ -2,10 +2,12 @@
 
 namespace PHPWarrior\Abilities;
 
+use Exception;
+use PHPWarrior\Position;
+
 class Base
 {
-
-    public $is_sense = false;
+    public bool $isSense = false;
 
     public function __construct($unit)
     {
@@ -14,14 +16,7 @@ class Base
 
     public function offset($direction, $forward = 1, $right = 0): array
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
-
-        return match ($direction) {
-            'forward'  => [$forward,  -$right];
-            'backward' => [-$forward, $right];
-            'right'    => [$right, $forward];
-            'left'     => [-$right, -$forward];
-        }
+        $direction = Position::normalizeDirection($direction);
 
         switch ($direction) {
             case 'forward':
@@ -39,26 +34,29 @@ class Base
         }
     }
 
-    public function space($direction, $forward = 1, $right = 0)
+    public function space($direction, $forward = 1, $right = 0): mixed
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
+        $direction = Position::normalizeDirection($direction);
+
         return call_user_func_array(
             [$this->unit->position, 'relative_space'],
             $this->offset($direction, $forward, $right)
         );
+
         //return $this->unit->position->relative_space($this->offset($direction, $forward, $right));
     }
 
-    public function unit($direction, $forward = 1, $right = 0)
+    public function unit($direction, $forward = 1, $right = 0): mixed
     {
         return $this->space($direction, $forward, $right)->unit();
     }
 
-    public function damage($receiver, $amount)
+    public function damage($receiver, $amount): void
     {
-        $receiver->take_damage($amount);
-        if (!$receiver->is_alive()) {
-            $this->unit->earn_points($receiver->max_health());
+        $receiver->takeDamage($amount);
+
+        if (!$receiver->isAlive()) {
+            $this->unit->earnPoints($receiver->maxHealth());
         }
     }
 
@@ -66,20 +64,21 @@ class Base
     {
     }
 
-    public function pass_turn()
+    public function passTurn()
     {
         # callback which is triggered every turn
     }
 
-    public function verify_direction($direction)
+    public function verifyDirection($direction): void
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
-        if (array_search($direction, \PHPWarrior\Position::$RELATIVE_DIRECTIONS) === false) {
-            throw new \Exception("Unknown direction {$direction}. Should be :forward, :backward, :left or :right.");
+        $direction = Position::normalizeDirection($direction);
+
+        if (array_search($direction, Position::$relativeDirections) === false) {
+            throw new Exception("Unknown direction {$direction}. Should be :forward, :backward, :left or :right.");
         }
     }
 
-    public static function normalize_direction($direction)
+    public static function normalizeDirection($direction)
     {
         return str_replace(':', $direction);
     }

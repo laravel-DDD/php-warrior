@@ -2,20 +2,22 @@
 
 namespace PHPWarrior\Abilities;
 
+use PHPWarrior\Position;
+
 class Feel extends Base
 {
+    public bool $isSense = true;
 
-    public $is_sense = true;
-
-    public function description()
+    public function description(): string
     {
         return __('Returns a Space for the given direction (forward by default).');
     }
 
-    public function perform($direction = 'forward')
+    public function perform(string $direction = 'forward'): mixed
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
-        $this->verify_direction($direction);
+        $direction = Position::normalizeDirection($direction);
+        $this->verifyDirection($direction);
+
         return $this->space($direction);
     }
 }

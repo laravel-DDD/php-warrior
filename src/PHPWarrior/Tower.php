@@ -2,32 +2,29 @@
 
 namespace PHPWarrior;
 
-
 /**
  * Class Tower
- * 
+ *
  * @package PHPWarrior
  */
 class Tower
 {
-    public $path;
+    public string $path;
 
     /**
      * Tower constructor.
-     * 
-     * @param $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->path = $path;
     }
 
-    public function name()
+    public function name(): string
     {
         return basename($this->path);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name();
     }
