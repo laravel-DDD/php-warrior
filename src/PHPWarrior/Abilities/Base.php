@@ -2,6 +2,7 @@
 
 namespace PHPWarrior\Abilities;
 
+use Exception;
 use PHPWarrior\Position;
 
 class Base
@@ -45,7 +46,8 @@ class Base
     public function damage($receiver, $amount)
     {
         $receiver->take_damage($amount);
-        if (!$receiver->is_alive()) {
+
+        if (! $receiver->is_alive()) {
             $this->unit->earn_points($receiver->max_health());
         }
     }
@@ -62,8 +64,9 @@ class Base
     public function verify_direction($direction)
     {
         $direction = Position::normalize_direction($direction);
+
         if (array_search($direction, Position::$RELATIVE_DIRECTIONS) === false) {
-            throw new \Exception("Unknown direction {$direction}. Should be :forward, :backward, :left or :right.");
+            throw new Exception("Unknown direction {$direction}. Should be :forward, :backward, :left or :right.");
         }
     }
 

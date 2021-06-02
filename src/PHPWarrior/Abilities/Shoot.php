@@ -2,6 +2,8 @@
 
 namespace PHPWarrior\Abilities;
 
+use PHPWarrior\Position;
+
 class Shoot extends Base
 {
     public function description()
@@ -11,21 +13,19 @@ class Shoot extends Base
 
     public function perform($direction = 'forward')
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
+        $direction = Position::normalize_direction($direction);
         $this->verify_direction($direction);
         $receiver = null;
+        
         foreach ($this->multi_unit($direction, range(1, 3)) as $row) {
-            if (!is_null($row)) {
+            if (! is_null($row)) {
                 $receiver = $row;
                 break;
             }
         }
+
         if ($receiver) {
-            $this->unit->say(sprintf(
-                __('shoots %1$s and hits %2$s'),
-                __($direction),
-                $receiver
-            ));
+            $this->unit->say(sprintf(__('shoots %1$s and hits %2$s'), __($direction), $receiver));
             $this->damage($receiver, $this->unit->shoot_power());
         } else {
             $this->unit->say(__("shoots and hits nothing"));
@@ -35,9 +35,11 @@ class Shoot extends Base
     public function multi_unit($direction, $range)
     {
         $map = [];
+
         foreach ($range as $n) {
             $map[] = $this->unit($direction, $n);
         }
+
         return $map;
     }
 }

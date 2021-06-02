@@ -2,6 +2,8 @@
 
 namespace PHPWarrior\Abilities;
 
+use PHPWarrior\Position;
+
 class Feel extends Base
 {
 
@@ -14,7 +16,7 @@ class Feel extends Base
 
     public function perform($direction = 'forward')
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
+        $direction = Position::normalize_direction($direction);
         $this->verify_direction($direction);
         return $this->space($direction);
     }

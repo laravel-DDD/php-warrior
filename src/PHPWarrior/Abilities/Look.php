@@ -2,6 +2,8 @@
 
 namespace PHPWarrior\Abilities;
 
+use PHPWarrior\Position;
+
 class Look extends Base
 {
 
@@ -14,12 +16,14 @@ class Look extends Base
 
     public function perform($direction = 'forward')
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
+        $direction = Position::normalize_direction($direction);
         $this->verify_direction($direction);
         $map = [];
+
         foreach (range(1, 3) as $amount) {
             $map[] = $this->space($direction, $amount);
         }
+
         return $map;
     }
 }
