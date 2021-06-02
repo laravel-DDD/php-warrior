@@ -2,6 +2,8 @@
 
 namespace PHPWarrior\Abilities;
 
+use PHPWarrior\Position;
+
 class Base
 {
 
@@ -14,26 +16,20 @@ class Base
 
     public function offset($direction, $forward = 1, $right = 0)
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
-        switch ($direction) {
-            case 'forward':
-                return [$forward, -$right];
-                break;
-            case 'backward':
-                return [-$forward, $right];
-                break;
-            case 'right':
-                return [$right, $forward];
-                break;
-            case 'left':
-                return [-$right, -$forward];
-                break;
+        $direction = Position::normalize_direction($direction);
+
+        return match($direction) {
+            'forward' => [$forward, -$right],
+            'backward' => [-$forward, $right],
+            'right' => [$right, $forward],
+            'left' => [-$right, -$forward],
         }
     }
 
     public function space($direction, $forward = 1, $right = 0)
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
+        $direction = Position::normalize_direction($direction);
+
         return call_user_func_array(
             [$this->unit->position, 'relative_space'],
             $this->offset($direction, $forward, $right)
@@ -65,8 +61,8 @@ class Base
 
     public function verify_direction($direction)
     {
-        $direction = \PHPWarrior\Position::normalize_direction($direction);
-        if (array_search($direction, \PHPWarrior\Position::$RELATIVE_DIRECTIONS) === false) {
+        $direction = Position::normalize_direction($direction);
+        if (array_search($direction, Position::$RELATIVE_DIRECTIONS) === false) {
             throw new \Exception("Unknown direction {$direction}. Should be :forward, :backward, :left or :right.");
         }
     }

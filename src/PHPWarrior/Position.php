@@ -155,22 +155,15 @@ class Position
      * @param  $right
      * @return array
      */
-    public function translate_offset($forward, $right)
+    public function translate_offset(int $forward, int $right): array
     {
         $direction = Position::normalize_direction($this->direction());
-        switch ($direction) {
-            case 'north':
-                return [$this->x + (int)$right, $this->y - (int)$forward];
-                break;
-            case 'east':
-                return [$this->x + (int)$forward, $this->y + (int)$right];
-                break;
-            case 'south':
-                return [$this->x - (int)$right, $this->y + (int)$forward];
-                break;
-            case 'west':
-                return [$this->x - (int)$forward, $this->y - (int)$right];
-                break;
+
+        return match ($direction) {
+            'north' => [$this->x + $right, $this->y - $forward],
+            'east'  => [$this->x + $forward, $this->y + $right],
+            'south' => [$this->x - $right, $this->y + $forward],
+            'west'  => [$this->x - $forward, $this->y - $right], 
         }
     }
 
