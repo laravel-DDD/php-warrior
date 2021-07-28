@@ -24,7 +24,7 @@ class Base
             'backward' => [-$forward, $right],
             'right' => [$right, $forward],
             'left' => [-$right, -$forward],
-        }
+        };
     }
 
     public function space($direction, $forward = 1, $right = 0)
